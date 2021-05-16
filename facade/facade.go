@@ -48,6 +48,14 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, errs.New("Error in --output option", errs.WithCause(err)))
 			}
+			tsvFlag, err := cmd.Flags().GetBool("tsv")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error in --tsv option", errs.WithCause(err)))
+			}
+			winNewline, err := cmd.Flags().GetBool("win-newline")
+			if err != nil {
+				return debugPrint(ui, errs.New("Error win-newline --tsv option", errs.WithCause(err)))
+			}
 
 			// output stream
 			w := ui.Writer()
@@ -70,14 +78,20 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 			}
 
 			// export CSV
-			return debugPrint(ui, conv.ToCsv(w, xlsx, sheetNo))
+			comma := rune(0)
+			if tsvFlag {
+				comma = '\t'
+			}
+			return debugPrint(ui, conv.ToCsv(w, xlsx, sheetNo, comma, winNewline))
 		},
 	}
 	rootCmd.Flags().BoolVarP(&versionFlag, "version", "v", false, "output version of "+Name)
-	rootCmd.Flags().BoolVarP(&debugFlag, "debug", "", false, "output version of "+Name)
+	rootCmd.Flags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
 	rootCmd.Flags().StringP("sheet", "s", "", "sheet name in Excel file")
 	rootCmd.Flags().StringP("password", "p", "", "password in Excel file")
 	rootCmd.Flags().StringP("output", "o", "", "path of output CSV file")
+	rootCmd.Flags().BoolP("tsv", "t", false, "output with TSV format")
+	rootCmd.Flags().BoolP("win-newline", "w", false, "output with CRLF newline")
 
 	rootCmd.SilenceUsage = true
 	rootCmd.SetArgs(args)

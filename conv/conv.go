@@ -8,7 +8,7 @@ import (
 	"github.com/spiegel-im-spiegel/errs"
 )
 
-func ToCsv(w io.Writer, xlsx *excelize.File, sheetIndex int) error {
+func ToCsv(w io.Writer, xlsx *excelize.File, sheetIndex int, comma rune, winNewline bool) error {
 	rows, err := xlsx.Rows(xlsx.GetSheetName(sheetIndex))
 	if err != nil {
 		var errSheet excelize.ErrSheetNotExist
@@ -18,6 +18,10 @@ func ToCsv(w io.Writer, xlsx *excelize.File, sheetIndex int) error {
 		return errs.Wrap(err)
 	}
 	csvw := csv.NewWriter(w)
+	csvw.UseCRLF = winNewline
+	if comma != 0 {
+		csvw.Comma = comma
+	}
 	defer csvw.Flush()
 	for rows.Next() {
 		cols, err := rows.Columns()

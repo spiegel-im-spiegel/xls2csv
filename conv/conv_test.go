@@ -57,7 +57,7 @@ func TestToCsv(t *testing.T) {
 		}
 		if err == nil {
 			buf := &bytes.Buffer{}
-			err := conv.ToCsv(buf, xlsx, tc.sheetNo)
+			err := conv.ToCsv(buf, xlsx, tc.sheetNo, 0, false)
 			if err != nil && !errors.Is(err, tc.err) {
 				t.Errorf("ToCsv() is \"%+v\", want \"%+v\".", err, tc.err)
 			}
