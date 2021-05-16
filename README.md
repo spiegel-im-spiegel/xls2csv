@@ -27,12 +27,14 @@ Usage:
   xls2csv [flags] <Excel file>
 
 Flags:
-      --debug             output version of xls2csv
+      --debug             for debug
   -h, --help              help for xls2csv
   -o, --output string     path of output CSV file
   -p, --password string   password in Excel file
   -s, --sheet string      sheet name in Excel file
+  -t, --tsv               output with TSV format
   -v, --version           output version of xls2csv
+  -w, --win-newline       output with CRLF newline
 
 $ xls2csv conv/testdata/test-pw.xlsx -p passwd
 名前,年齢
