@@ -4,31 +4,28 @@ import (
 	"encoding/csv"
 	"io"
 
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/spiegel-im-spiegel/csvdata"
+	"github.com/spiegel-im-spiegel/csvdata/exceldata"
 	"github.com/spiegel-im-spiegel/errs"
 )
 
-func ToCsv(w io.Writer, xlsx *excelize.File, sheetIndex int, comma rune, winNewline bool) error {
-	rows, err := xlsx.Rows(xlsx.GetSheetName(sheetIndex))
-	if err != nil {
-		var errSheet excelize.ErrSheetNotExist
-		if errs.As(err, &errSheet) {
-			return errs.Wrap(ErrInvalidSheetName, errs.WithCause(err))
-		}
-		return errs.Wrap(err)
-	}
+func ToCsv(w io.Writer, r *exceldata.Reader, comma rune, winNewline bool) error {
 	csvw := csv.NewWriter(w)
 	csvw.UseCRLF = winNewline
 	if comma != 0 {
 		csvw.Comma = comma
 	}
 	defer csvw.Flush()
-	for rows.Next() {
-		cols, err := rows.Columns()
-		if err != nil {
+
+	rc := csvdata.NewRows(r, false)
+	for {
+		if err := rc.Next(); err != nil {
+			if errs.Is(err, io.EOF) {
+				break
+			}
 			return errs.Wrap(err)
 		}
-		if err := csvw.Write(cols); err != nil {
+		if err := csvw.Write(rc.Row()); err != nil {
 			return errs.Wrap(err)
 		}
 	}

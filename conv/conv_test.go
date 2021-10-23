@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"testing"
 
+	"github.com/spiegel-im-spiegel/csvdata"
 	"github.com/spiegel-im-spiegel/xls2csv/conv"
 )
 
@@ -28,12 +29,12 @@ func TestOpenXlsxFileSheet(t *testing.T) {
 		{path: "testdata/test.xlsx", pw: "", sheetName: "", err: nil},
 		{path: "testdata/test.xlsx", pw: "passwd", sheetName: "", err: nil},
 		{path: "testdata/test.xlsx", pw: "", sheetName: "Sheet1", err: nil},
-		{path: "testdata/test.xlsx", pw: "", sheetName: "Sheet2", err: conv.ErrInvalidSheetName},
+		{path: "testdata/test.xlsx", pw: "", sheetName: "Sheet2", err: csvdata.ErrInvalidSheetName},
 		{path: "testdata/test-pw.xlsx", pw: "", sheetName: "", err: zip.ErrFormat},
 		{path: "testdata/test-pw.xlsx", pw: "passwd", sheetName: "", err: nil},
 	}
 	for _, tc := range testCases {
-		_, _, err := conv.OpenXlsxFileSheet(tc.path, tc.pw, tc.sheetName)
+		_, err := conv.OpenXlsxFileSheet(tc.path, tc.pw, tc.sheetName)
 		if !errors.Is(err, tc.err) {
 			t.Errorf("OpenXlsxFileSheet() is \"%+v\", want \"%+v\".", err, tc.err)
 		}
@@ -43,21 +44,19 @@ func TestOpenXlsxFileSheet(t *testing.T) {
 func TestToCsv(t *testing.T) {
 	testCases := []struct {
 		path    string
-		sheetNo int
 		err     error
 		csvdata string
 	}{
-		{path: "testdata/test.xlsx", sheetNo: 0, err: nil, csvdata: res},
-		{path: "testdata/test.xlsx", sheetNo: 1, err: conv.ErrInvalidSheetName, csvdata: res},
+		{path: "testdata/test.xlsx", err: nil, csvdata: res},
 	}
 	for _, tc := range testCases {
-		xlsx, _, err := conv.OpenXlsxFileSheet(tc.path, "", "")
+		xlsx, err := conv.OpenXlsxFileSheet(tc.path, "", "")
 		if err != nil && !errors.Is(err, tc.err) {
 			t.Errorf("OpenXlsxFileSheet() is \"%+v\", want \"%+v\".", err, tc.err)
 		}
 		if err == nil {
 			buf := &bytes.Buffer{}
-			err := conv.ToCsv(buf, xlsx, tc.sheetNo, 0, false)
+			err := conv.ToCsv(buf, xlsx, 0, false)
 			if err != nil && !errors.Is(err, tc.err) {
 				t.Errorf("ToCsv() is \"%+v\", want \"%+v\".", err, tc.err)
 			}
