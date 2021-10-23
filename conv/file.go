@@ -1,23 +1,17 @@
 package conv
 
 import (
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/spiegel-im-spiegel/csvdata/exceldata"
 	"github.com/spiegel-im-spiegel/errs"
 )
 
-func OpenXlsxFileSheet(path, password, sheetName string) (*excelize.File, int, error) {
-	xlsx, err := excelize.OpenFile(path, excelize.Options{Password: password})
+func OpenXlsxFileSheet(path, password, sheetName string) (*exceldata.Reader, error) {
+	xlsx, err := exceldata.OpenFile(path, password)
 	if err != nil {
-		return xlsx, 0, errs.Wrap(err, errs.WithContext("path", path), errs.WithContext("sheetName", sheetName))
+		return nil, errs.Wrap(err, errs.WithContext("path", path), errs.WithContext("sheetName", sheetName))
 	}
-	sheetNo := 0
-	if len(sheetName) > 0 {
-		sheetNo := xlsx.GetSheetIndex(sheetName)
-		if sheetNo < 0 {
-			return xlsx, -1, errs.Wrap(ErrInvalidSheetName, errs.WithContext("path", path), errs.WithContext("sheetName", sheetName))
-		}
-	}
-	return xlsx, sheetNo, nil
+	r, err := exceldata.New(xlsx, sheetName)
+	return r, errs.Wrap(err, errs.WithContext("path", path), errs.WithContext("sheetName", sheetName))
 }
 
 /* Copyright 2021 Spiegel

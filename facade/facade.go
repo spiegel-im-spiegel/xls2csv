@@ -72,7 +72,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 			if len(args) != 1 {
 				return debugPrint(ui, errs.Wrap(os.ErrInvalid, errs.WithContext("args", args)))
 			}
-			xlsx, sheetNo, err := conv.OpenXlsxFileSheet(args[0], pw, sheetName)
+			xlsx, err := conv.OpenXlsxFileSheet(args[0], pw, sheetName)
 			if err != nil {
 				return debugPrint(ui, errs.Wrap(err, errs.WithContext("path", args[0]), errs.WithContext("password", pw), errs.WithContext("sheet", sheetName)))
 			}
@@ -82,7 +82,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 			if tsvFlag {
 				comma = '\t'
 			}
-			return debugPrint(ui, conv.ToCsv(w, xlsx, sheetNo, comma, winNewline))
+			return debugPrint(ui, conv.ToCsv(w, xlsx, comma, winNewline))
 		},
 	}
 	rootCmd.Flags().BoolVarP(&versionFlag, "version", "v", false, "output version of "+Name)
