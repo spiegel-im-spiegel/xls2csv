@@ -4,10 +4,11 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/goark/gocli/exitcode"
+	"github.com/goark/gocli/rwi"
+
+	"github.com/goark/errs"
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gocli/exitcode"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
 	"github.com/spiegel-im-spiegel/xls2csv/conv"
 )
 

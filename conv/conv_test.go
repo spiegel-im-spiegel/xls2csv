@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/csvdata"
+	"github.com/goark/csvdata"
 	"github.com/spiegel-im-spiegel/xls2csv/conv"
 )
 

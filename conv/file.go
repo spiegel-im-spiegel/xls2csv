@@ -1,8 +1,8 @@
 package conv
 
 import (
-	"github.com/spiegel-im-spiegel/csvdata/exceldata"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/csvdata/exceldata"
+	"github.com/goark/errs"
 )
 
 func OpenXlsxFileSheet(path, password, sheetName string) (*exceldata.Reader, error) {

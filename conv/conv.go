@@ -4,9 +4,9 @@ import (
 	"encoding/csv"
 	"io"
 
-	"github.com/spiegel-im-spiegel/csvdata"
-	"github.com/spiegel-im-spiegel/csvdata/exceldata"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/csvdata"
+	"github.com/goark/csvdata/exceldata"
+	"github.com/goark/errs"
 )
 
 func ToCsv(w io.Writer, r *exceldata.Reader, comma rune, winNewline bool) error {
